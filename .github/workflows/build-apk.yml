@@ -5,6 +5,7 @@ on:
     branches:
       - main
       - master
+  workflow_dispatch:
 
 jobs:
   build:
@@ -12,27 +13,31 @@ jobs:
 
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
 
       - name: Setup Java JDK
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4
         with:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: Setup Android SDK
-        uses: android-actions/setup-android@v2
-
-      - name: Build Web to APK using PWABuilder / Capacitor
+      - name: Build Android Project with Capacitor
         run: |
-          npm install -g @capacitor/cli @capacitor/core
+          npm init -y
+          npm install @capacitor/core @capacitor/cli @capacitor/android
           npx cap init "Sachra Solutions" "com.sachrasolutions.app" --web-dir .
           npx cap add android
           cd android
+          chmod +x gradlew
           ./gradlew assembleDebug
 
       - name: Upload APK Artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: SachraSolutions-App
           path: android/app/build/outputs/apk/debug/app-debug.apk
