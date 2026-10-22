@@ -26,12 +26,21 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: Build Android Project with Capacitor
+      - name: Initialize & Build Android Project
         run: |
+          # Create package.json if not exists
           npm init -y
+          
+          # Install Capacitor dependencies
           npm install @capacitor/core @capacitor/cli @capacitor/android
+          
+          # Initialize Capacitor
           npx cap init "Sachra Solutions" "com.sachrasolutions.app" --web-dir .
+          
+          # Add Android platform
           npx cap add android
+          
+          # Build APK
           cd android
           chmod +x gradlew
           ./gradlew assembleDebug
